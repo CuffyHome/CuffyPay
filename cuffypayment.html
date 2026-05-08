@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ชำระเงิน - ร้านคัฟฟี่</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #fff0f3;
+            --card-bg: #ffffff;
+            --primary-pink: #ffb3c6;
+            --text-dark: #5c3a41;
+            --text-light: #ff8fab;
+            --button-hover: #ff8fab;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Mali', cursive;
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .payment-card {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 420px;
+            border-radius: 35px;
+            padding: 30px 20px;
+            box-shadow: 0 15px 35px rgba(255, 179, 198, 0.3);
+            text-align: center;
+            position: relative;
+        }
+
+        .shop-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-light);
+            margin-bottom: 5px;
+            margin-top: 0;
+        }
+
+        .shop-subtitle {
+            font-size: 1rem;
+            color: #a0848a;
+            margin-bottom: 25px;
+            margin-top: 0;
+        }
+
+        .qr-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 320px; /* ขยายขนาดความกว้างของรูปให้ใหญ่ขึ้นนิดนึงตามที่ขอครับ */
+            margin: 0 auto 25px auto;
+            transition: transform 0.3s ease;
+        }
+
+        .base-image {
+            width: 100%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(255, 179, 198, 0.4);
+            display: block;
+        }
+
+        .bank-info {
+            background-color: #fff9fa;
+            padding: 20px;
+            border-radius: 25px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 179, 198, 0.2);
+        }
+
+        .bank-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin: 0 0 5px 0;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .account-name {
+            font-size: 0.95rem;
+            margin: 0 0 10px 0;
+            color: #8a6d73;
+        }
+
+        .account-number {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin: 10px 0;
+            color: var(--text-dark);
+        }
+
+        .copy-btn {
+            background-color: var(--primary-pink);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-family: 'Mali', cursive;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 179, 198, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .copy-btn:hover {
+            background-color: var(--button-hover);
+            transform: translateY(-2px);
+        }
+
+        .contact-box {
+            background-color: #fff;
+            border: 2px dashed var(--primary-pink);
+            padding: 15px 15px;
+            border-radius: 25px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .contact-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            background: #fff5f7;
+            padding: 12px 15px;
+            border-radius: 18px;
+            box-shadow: 0 2px 5px rgba(255, 179, 198, 0.1);
+        }
+
+        .copy-small-btn {
+            background-color: var(--primary-pink);
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            font-size: 0.85rem;
+            font-family: 'Mali', cursive;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .copy-small-btn:hover {
+            background-color: var(--button-hover);
+        }
+
+        .footer-note {
+            font-size: 0.9rem;
+            color: #a0848a;
+            margin-top: 10px;
+        }
+
+        /* Toast Message กลางหน้าจอ */
+        .toast-message {
+            visibility: hidden;
+            background-color: #ff8fab;
+            color: #fff;
+            text-align: center;
+            border-radius: 50px;
+            padding: 15px 35px;
+            position: fixed;
+            z-index: 2000;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            font-size: 1.1rem;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(255, 143, 171, 0.6);
+            white-space: nowrap;
+        }
+
+        .toast-message.show {
+            visibility: visible;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        svg {
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="payment-card">
+        <h1 class="shop-title">🌸 ชำระเงิน 🌸</h1>
+        <p class="shop-subtitle">โอนแล้วรบกวนแจ้งสลิปด้วยนะคะ</p>
+
+        <div class="qr-wrapper">
+            <img src="https://cdn.discordapp.com/attachments/731028775478755470/1502255717292310558/1192_20250928152354.jpg?ex=69ff0c29&is=69fdbaa9&hm=acfb7d46d3931f6c54473dad196c63b8c1359f3deaae1d1ba2edb3677d6e95ea&" alt="ป้ายรับเงิน" class="base-image" onerror="this.src='https://placehold.co/400x400/fff0f3/ffb3c6?text=Payment+QR'">
+        </div>
+
+        <div class="bank-info">
+            <p class="bank-name">📝 โน๊ตสลิป</p>
+            <p class="account-name">รบกวนหมายเหตุสลิปให้ร้านด้วยนะคะ</p>
+            <p class="account-number" id="slipNote" style="font-size: 1.4rem;">ซื้อขายร้านคัฟฟี่</p>
+            <button class="copy-btn" onclick="copyText('slipNote', false)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                คัดลอกข้อความ
+            </button>
+        </div>
+
+        <div class="bank-info">
+            <p class="bank-name">📱 พร้อมเพย์ / วอลเลท</p>
+            <p class="account-name">NAME: ชาลิสา ภู่พลอย</p>
+            <p class="account-number" id="accNum1">095-720-4429</p>
+            <button class="copy-btn" onclick="copyText('accNum1', true)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                คัดลอกพร้อมเพย์
+            </button>
+        </div>
+
+        <div class="bank-info">
+            <p class="bank-name">🏦 ธนาคารกสิกรไทย</p>
+            <p class="account-name">NAME: ชาลิสา ภู่พลอย</p>
+            <p class="account-number" id="accNum2">086-1-83545-6</p>
+            <button class="copy-btn" onclick="copyText('accNum2', true)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                คัดลอกเลขบัญชี
+            </button>
+        </div>
+
+        <div class="contact-box">
+            <p class="bank-name" style="margin-bottom: 10px;">💬 ช่องทางการติดต่อ</p>
+            
+            <div class="contact-item">
+                <div><span>📘</span> <b>FB:</b> <span id="fbName">Chalisa Pooploy</span></div>
+                <button class="copy-small-btn" onclick="copyText('fbName', false)">คัดลอก</button>
+            </div>
+            
+            <div class="contact-item">
+                <div><span>💚</span> <b>Line:</b> <span id="lineId">@664chwum</span></div>
+                <button class="copy-small-btn" onclick="copyText('lineId', false)">คัดลอก</button>
+            </div>
+        </div>
+
+        <p class="footer-note">✨ ขอบคุณที่อุดหนุนนะคะ ✨</p>
+
+        <div id="toast" class="toast-message">คัดลอกสำเร็จแล้วค่ะ! 💖</div>
+    </div>
+
+    <script>
+        /**
+         * ฟังก์ชันคัดลอกข้อความ
+         * @param {string} elementId - ไอดีของส่วนที่ต้องการคัดลอกข้อความ
+         * @param {boolean} isAccount - ตัวเช็คว่าเป็นเลขบัญชีหรือไม่ (ถ้าใช่จะลบขีดออก)
+         */
+        function copyText(elementId, isAccount) {
+            const textElement = document.getElementById(elementId);
+            let textToCopy = textElement.innerText;
+
+            // ถ้าเป็นเลขบัญชี ให้ลบขีด (-) และเว้นวรรคออก
+            if (isAccount) {
+                textToCopy = textToCopy.replace(/-/g, '').replace(/\s/g, '');
+            }
+
+            // สร้างกล่องข้อความจำลองเพื่อทำการคัดลอก
+            const tempInput = document.createElement("textarea");
+            tempInput.value = textToCopy;
+            tempInput.style.position = "absolute";
+            tempInput.style.left = "-9999px";
+            document.body.appendChild(tempInput);
+            
+            tempInput.select();
+            tempInput.setSelectionRange(0, 99999); // จำเป็นสำหรับการรองรับบนมือถือ
+            
+            try {
+                document.execCommand("copy");
+                showToast(); 
+            } catch (err) {
+                console.error("ไม่สามารถคัดลอกได้", err);
+            }
+            
+            // ลบกล่องข้อความจำลองทิ้ง
+            document.body.removeChild(tempInput);
+        }
+
+        // ฟังก์ชันแสดงการแจ้งเตือน (Toast) กลางหน้าจอ
+        function showToast() {
+            const toast = document.getElementById("toast");
+            toast.className = "toast-message show";
+            
+            // ให้กล่องข้อความหายไปหลังจากผ่านไป 2 วินาที
+            setTimeout(function(){
+                toast.className = toast.className.replace("show", "");
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
